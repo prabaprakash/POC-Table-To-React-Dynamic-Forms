@@ -1,6 +1,8 @@
 npm start
 
-1.localhost:3200/api/schema/files
+1. files table schema
+
+http://localhost:3200/api/schema/files
 
 ```
 [
