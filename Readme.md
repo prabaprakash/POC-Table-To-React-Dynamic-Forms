@@ -70,3 +70,7 @@ npm start
   }
 ]
 ```
+Form
+
+![alt text](https://raw.githubusercontent.com/vaayadi/POC-Table-To-React-Dynamic-Forms/master/form.png)
+
