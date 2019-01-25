@@ -22,4 +22,8 @@ var db = {
     sequelize: sequelize
 };
 db.files = db.sequelize.import('./models/files');
+db.fun = db.sequelize.import('./models/fun');
+db.sumit = db.sequelize.import('./models/sumit');
+db.prasad = db.sequelize.import('./models/prasad');
+
 module.exports = db;

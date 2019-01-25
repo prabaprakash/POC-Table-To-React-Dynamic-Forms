@@ -10,9 +10,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 const db = require("./dbPool");
 
 app.use(express.static('src/dist/'));
-app.get('/', function(request, response) {
-  response.redirect('index.html');
-});
+
 app.get('/api/files/:offset', async (request, response) => {
     let files = await db.files.findAll({
         raw: true,
@@ -30,15 +28,16 @@ app.get('/api/schema/:table', (request, response) => {
   })
 });
 
-app.post('/api/files/insert', async (request, response) => {
+app.post('/api/files/insert/:table', async (request, response) => {
   console.log(request.body)
-  const result = await db.files.create(request.body);
+  const result = await db[request.params.table].create(request.body);
   response.json(result.dataValues);
 });
 
-app.get('*', function(req, res) {
-  res.sendStatus(404);
+app.get('/*', function(req, res) {
+  res.sendFile(path.join(__dirname, '../dist/index.html'));
 });
+
 const port = process.env.PORT || 3200;
 app.listen(port, function() {
   console.log(`Application listening on port ${port}`);

@@ -20,6 +20,14 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(200),
       allowNull: false
     },
+    size: {
+      type: DataTypes.DECIMAL,
+      allowNull: false
+    },
+    modifyTime: {
+      type: DataTypes.STRING(20),
+      allowNull: false
+    },
     created_at: {
       type: DataTypes.DATE,
       allowNull: false
@@ -27,14 +35,6 @@ module.exports = function(sequelize, DataTypes) {
     updated_at: {
       type: DataTypes.DATE,
       allowNull: false
-    },
-    size: {
-      type: DataTypes.DECIMAL,
-      allowNull: true
-    },
-    modifyTime: {
-      type: DataTypes.STRING(20),
-      allowNull: true
     }
   }, {
     tableName: 'files'

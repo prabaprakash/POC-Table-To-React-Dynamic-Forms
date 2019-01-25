@@ -10,7 +10,7 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = { elements: [], metaData: {} };
-    fetch(`/api/schema/files`, {
+    fetch(`/api/schema/${this.props.match.params.tableName}`, {
       crossDomain: true,
     })
       .then(response => response.json())
@@ -28,35 +28,36 @@ export default class App extends React.Component {
     this.setState({ elements: elements })
   }
   async onSave() {
-  let body = {}
-  _.each(this.state.elements, element => {
-    body[element.id] = element.value;
-  });
-  const rawResponse = await fetch('/api/files/insert', {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(body)
-  });
-  const content = await rawResponse.json();
-  console.log(content);
-}
-render() {
-  return (<div className='container'>
-    <ReactJsonDynamicForms
-      elements={this.state.elements}
-      onChange={this.onChange}
-      metaData={this.state.metaData}
-      className='reactform'
-      customComponents={{}}
-    />
-    <Button className="save" onClick={()=>this.onSave()}>
-      Save
+    let body = {}
+    _.each(this.state.elements, element => {
+      body[element.id] = element.value;
+    });
+    const rawResponse = await fetch(`/api/files/insert/${this.props.match.params.tableName}`, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    });
+    const content = await rawResponse.json();
+    console.log(content);
+  }
+  render() {
+    console.log(this.props);
+    return (<div className='container'>
+      <ReactJsonDynamicForms
+        elements={this.state.elements}
+        onChange={this.onChange}
+        metaData={this.state.metaData}
+        className='reactform'
+        customComponents={{}}
+      />
+      <Button className="save" onClick={() => this.onSave()}>
+        Save
       </Button>
-  </div>)
-}
+    </div>)
+  }
 }
 
 App.propTypes = {
