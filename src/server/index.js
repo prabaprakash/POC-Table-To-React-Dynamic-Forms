@@ -30,6 +30,12 @@ app.get('/api/schema/:table', (request, response) => {
   })
 });
 
+app.post('/api/files/insert', async (request, response) => {
+  console.log(request.body)
+  const result = await db.files.create(request.body);
+  response.json(result.dataValues);
+});
+
 app.get('*', function(req, res) {
   res.sendStatus(404);
 });

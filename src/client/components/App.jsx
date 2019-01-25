@@ -1,33 +1,62 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import PropTypes, { element } from 'prop-types';
+import { formMetaData } from './tableMetaData';
+import { Button } from 'react-bootstrap';
 
 import '../styles/App.scss';
-import { Button, FormControl } from 'react-bootstrap';
+import ReactJsonDynamicForms from 'react-json-dynamic-forms'
+
 export default class App extends React.Component {
   constructor(props) {
     super(props);
-    this.handleChange = this.handleChange.bind(this);
+    this.state = { elements: [], metaData: {} };
+    fetch(`/api/schema/files`, {
+      crossDomain: true,
+    })
+      .then(response => response.json())
+      .then(data => {
+        const meta = formMetaData(data[0]);
+        console.log(meta);
+        this.setState({ elements: meta.fields, metaData: meta.metaData });
+      });
+    this.onChange = this.onChange.bind(this);
+    this.onSave = this.onSave.bind(this)
+
   }
-  handleChange(e) {
-    parseInt(e.target.value) ? this.props.change(parseInt(e.target.value)): '';
+  onChange(elements) {
+    console.log(elements)
+    this.setState({ elements: elements })
   }
-  render() {
-    return (<div className="container">
-      <Button bsStyle="primary" onClick={() => this.props.add(this.props.number)}>
-          +
+  async onSave() {
+  let body = {}
+  _.each(this.state.elements, element => {
+    body[element.id] = element.value;
+  });
+  const rawResponse = await fetch('/api/files/insert', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  });
+  const content = await rawResponse.json();
+  console.log(content);
+}
+render() {
+  return (<div className='container'>
+    <ReactJsonDynamicForms
+      elements={this.state.elements}
+      onChange={this.onChange}
+      metaData={this.state.metaData}
+      className='reactform'
+      customComponents={{}}
+    />
+    <Button className="save" onClick={()=>this.onSave()}>
+      Save
       </Button>
-      <FormControl
-        data-testid="number"
-        type="text"
-        value={this.props.number}
-        onChange={this.handleChange}
-      />
-      <Button bsStyle="primary" onClick={() => this.props.sub(this.props.number)}>
-          -
-      </Button>
-    </div>
-    );
-  }
+  </div>)
+}
 }
 
 App.propTypes = {
